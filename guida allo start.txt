@@ -1,0 +1,9 @@
+cd ~/Desktop/sqli_lab
+docker-compose up -d
+docker-compose ps
+http://localhost
+
+
+qyando finito
+docker-compose down
+

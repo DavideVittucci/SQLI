@@ -1,0 +1,17 @@
+ ' OR '1'='1' -- -
+
+ inserendo questo in login o passqord entro anche non sapendo i dati degli utenti. Tautology
+
+
+ con user1' -- in login  possiamo entrare EOL comment
+
+
+ ' OR '1'='1'; DROP TABLE users; --
+attacco piggyback all integrita, elimina tabella utenti
+SELECT * FROM users WHERE username = '' OR '1'='1'; DROP TABLE users; -- ' AND password = ''
+
+
+'attacco Piggyback può portare a risultati devastanti, poiché consente all'attaccante di eseguire qualsiasi comando SQL con i permessi del database. In questo caso, l'uso del comando DROP TABLE:
+
+    Elimina completamente la tabella users, portando a una perdita di dati potenzialmente irreversibile se non ci sono backup.
+    La perdita della tabella può interrompere l'intera applicazione web, poiché le funzionalità di login e gestione degli utenti si basano su di essa.
