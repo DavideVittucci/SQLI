@@ -14,38 +14,41 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Verifica se l'utente esiste
-    $sql_user_check = "SELECT * FROM users WHERE username = '$username'";
-    $result_user_check = $conn->query($sql_user_check);
+    $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password';";
 
-    if ($result_user_check->num_rows == 0) {
-        // Se l'utente non esiste
-        $error_message = "L'utente '$username' non è presente nella tabella users.";
-        $show_form = false;
-    } else {
-        // Se l'utente esiste, controlla la password
-        $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-        $result = $conn->query($sql);
+    if ($conn->multi_query($sql)) {
+        do {
+            $result = $conn->store_result();
+            if ($result) {
+                if ($result->num_rows > 0) {
+                    $success_message = "Login avvenuto! Benvenuto, MR.Hacker!";
+                    $show_success = true;
+                    $show_form = false;
+                    break;
+                }
+                
+                $result->free();
+            }
+        } while ($conn->next_result());
+    }
 
-        if ($result->num_rows > 0) {
-            // Login avvenuto con successo, non mostrare il form
-            $_SESSION['username'] = $username; // Salva il nome utente nella sessione
-            $success_message = "Login successful! Benvenuto, MR.Hacker!";
-            $show_form = false;
-            $show_success = true;
+
+    if (!$show_success) {
+        if ($conn->errno) {
+            $error_message = "Errore di autenticazione.";
         } else {
-            $error_message = "Password errata per l'utente '$username'.";
-            $show_form = false;
+            $error_message = "Password errata o l'utente non è presente nella tabella users.";
         }
     }
 
     $conn->close();
 } else {
-    // Mostra il form se non è stato inviato nulla
+
     $show_form = true;
 }
 
