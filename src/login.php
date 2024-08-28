@@ -1,10 +1,10 @@
 <?php
-session_start(); // Inizializza la sessione
+session_start(); 
 
-// Gestione del logout
+
 if (isset($_GET['logout'])) {
-    session_destroy(); // Distrugge la sessione
-    header("Location: login.php"); // Reindirizza al form di login
+    session_destroy(); 
+    header("Location: login.php"); 
     exit();
 }
 
